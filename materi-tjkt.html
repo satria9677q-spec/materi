@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="id">
+<head> <h1>satria</h1>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materi Web TJKT</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #7c3aed;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(0,212,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* GRID BG */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 80px 20px 60px;
+    overflow: hidden;
+  }
+
+  .header-glow {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    animation: fadeSlideUp 0.6s ease both;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeSlideUp 0.6s 0.1s ease both;
+  }
+
+  .subtitle {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 300;
+    animation: fadeSlideUp 0.6s 0.2s ease both;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 16px 20px;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  nav a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 2px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  nav a:hover {
+    color: var(--accent);
+    background: rgba(0,212,255,0.08);
+  }
+
+  /* MAIN CONTENT */
+  main {
+    position: relative;
+    z-index: 5;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 80px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .card:hover {
+    border-color: rgba(0,212,255,0.3);
+    transform: translateX(4px);
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+
+  .card p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: #060d1a;
+    border: 1px solid rgba(0,212,255,0.1);
+    border-radius: 4px;
+    padding: 20px;
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+
+  .code-block pre {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: #a8d8f0;
+  }
+
+  .code-block .cmd-prompt { color: var(--accent); }
+  .code-block .cmd-comment { color: #4b5563; }
+  .code-block .cmd-output { color: #86efac; }
+  .code-block .cmd-keyword { color: var(--accent2); }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  th {
+    background: rgba(0,212,255,0.08);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 14px 16px;
+    text-align: left;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  tr:hover td {
+    background: rgba(255,255,255,0.02);
+    color: var(--text);
+  }
+
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  /* GRID LAYOUT */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  /* IP VISUAL */
+  .ip-visual {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+
+  .ip-octet {
+    background: rgba(0,212,255,0.1);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+    color: var(--accent);
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .ip-dot {
+    font-size: 1.5rem;
+    color: var(--muted);
+    margin: 0 2px;
+  }
+
+  /* WATT CALC */
+  .calc-box {
+    background: rgba(124,58,237,0.08);
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 4px;
+    padding: 28px;
+    margin-top: 16px;
+  }
+
+  .calc-box h3 {
+    color: #a78bfa;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  .calc-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .calc-input {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .calc-input label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .calc-input input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .calc-input input:focus {
+    border-color: var(--accent3);
+  }
+
+  .calc-btn {
+    background: var(--accent3);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s;
+    align-self: flex-end;
+  }
+
+  .calc-btn:hover { background: #6d28d9; }
+
+  .calc-result {
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(124,58,237,0.1);
+    border-radius: 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: #c4b5fd;
+    min-height: 48px;
+  }
+
+  /* CLASS CHIP */
+  .chip {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+    margin: 2px;
+  }
+
+  .chip-a { background: rgba(0,212,255,0.12); color: var(--accent); }
+  .chip-b { background: rgba(255,107,53,0.12); color: var(--accent2); }
+  .chip-c { background: rgba(124,58,237,0.12); color: #a78bfa; }
+
+  /* APP CARDS */
+  .app-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .app-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle at top right, var(--app-color, rgba(0,212,255,0.08)), transparent);
+    pointer-events: none;
+  }
+
+  .app-card:hover {
+    border-color: var(--app-color, rgba(0,212,255,0.3));
+    transform: translateY(-4px);
+  }
+
+  .app-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+
+  .app-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .app-card p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 600px) {
+    nav { flex-wrap: wrap; gap: 2px; }
+    nav a { font-size: 10px; padding: 6px 10px; }
+    .ip-visual { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-glow"></div>
+  <div class="badge">// Teknologi Jaringan Komputer & Telekomunikasi</div>
+  <h1>MATERI WEB<br>TJKT</h1>
+  <p class="subtitle">Panduan Lengkap untuk Siswa SMK Jurusan TJKT</p>
+</header>
+
+<!-- NAV -->
+<nav>
+  <a href="#cmd">CMD</a>
+  <a href="#ip">IP Address</a>
+  <a href="#volt">Voltase & Watt</a>
+  <a href="#virtual">Aplikasi Virtual</a>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- ===================== SECTION 1: CMD ===================== -->
+  <section class="section" id="cmd">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Command Prompt (CMD)</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="card">
+      <h3>Apa itu Command Prompt?</h3>
+      <p>Command Prompt (CMD) adalah antarmuka baris perintah (CLI) bawaan Windows yang memungkinkan pengguna untuk berinteraksi dengan sistem operasi menggunakan perintah teks. CMD sangat berguna untuk administrasi jaringan, troubleshooting, dan manajemen file.</p>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="code-block">
+          <pre><span class="cmd-comment"># Perintah Dasar Sistem</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">dir</span>           <span class="cmd-comment">// tampilkan isi folder</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">cd</span> nama_folder <span class="cmd-comment">// pindah direktori</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">mkdir</span> folder  <span class="cmd-comment">// buat folder baru</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">del</span> file.txt  <span class="cmd-comment">// hapus file</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">cls</span>           <span class="cmd-comment">// bersihkan layar</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">exit</span>          <span class="cmd-comment">// tutup CMD</span></pre>
+        </div>
+
+        <div class="code-block">
+          <pre><span class="cmd-comment"># Perintah Jaringan</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">ipconfig</span>
+<span class="cmd-output">Ethernet adapter Local Area Connection:
+   IPv4 Address: 192.168.1.10
+   Subnet Mask:  255.255.255.0
+   Gateway:      192.168.1.1</span>
+
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">ping</span> 8.8.8.8
+<span class="cmd-output">Reply from 8.8.8.8: bytes=32 time=12ms TTL=115</span>
+
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">tracert</span> google.com
+<span class="cmd-output">Tracing route to google.com [172.217.0.46]</span>
+
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">netstat</span> -an   <span class="cmd-comment">// lihat koneksi aktif</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">nslookup</span> google.com <span class="cmd-comment">// DNS lookup</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">arp</span> -a        <span class="cmd-comment">// lihat tabel ARP</span></pre>
+        </div>
+      </div>
+
+      <div>
+        <div class="code-block">
+          <pre><span class="cmd-comment"># Manajemen File & Sistem</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">copy</span> a.txt b.txt   <span class="cmd-comment">// salin file</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">move</span> a.txt C:\    <span class="cmd-comment">// pindah file</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">ren</span> lama.txt baru.txt <span class="cmd-comment">// rename</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">type</span> file.txt    <span class="cmd-comment">// tampilkan isi file</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">tree</span>             <span class="cmd-comment">// struktur folder</span>
+
+<span class="cmd-comment"># Perintah Sistem</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">systeminfo</span>       <span class="cmd-comment">// info sistem</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">tasklist</span>         <span class="cmd-comment">// proses berjalan</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">taskkill</span> /PID 1234 <span class="cmd-comment">// hentikan proses</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">shutdown</span> /s /t 0 <span class="cmd-comment">// matikan PC</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">shutdown</span> /r /t 0 <span class="cmd-comment">// restart PC</span></pre>
+        </div>
+
+        <div class="code-block">
+          <pre><span class="cmd-comment"># Perintah Lanjutan Jaringan</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">netsh</span> wlan show profiles
+<span class="cmd-output">Profiles on interface Wi-Fi:
+  Group policy profiles: None
+  User profiles: MyWiFi</span>
+
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">netsh</span> interface ip set address
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">route</span> print     <span class="cmd-comment">// tabel routing</span>
+<span class="cmd-prompt">C:\></span> <span class="cmd-keyword">pathping</span> 8.8.8.8 <span class="cmd-comment">// path & loss</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Perintah</th>
+            <th>Fungsi</th>
+            <th>Contoh</th>
+            <th>Kategori</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>ipconfig</td><td>Menampilkan konfigurasi IP semua adapter</td><td>ipconfig /all</td><td><span class="chip chip-a">JARINGAN</span></td></tr>
+          <tr><td>ping</td><td>Menguji konektivitas ke host</td><td>ping 192.168.1.1</td><td><span class="chip chip-a">JARINGAN</span></td></tr>
+          <tr><td>tracert</td><td>Melacak rute ke destinasi</td><td>tracert google.com</td><td><span class="chip chip-a">JARINGAN</span></td></tr>
+          <tr><td>netstat</td><td>Statistik jaringan & koneksi aktif</td><td>netstat -an</td><td><span class="chip chip-a">JARINGAN</span></td></tr>
+          <tr><td>dir</td><td>Menampilkan daftar file/folder</td><td>dir /a /b</td><td><span class="chip chip-b">SISTEM</span></td></tr>
+          <tr><td>systeminfo</td><td>Informasi lengkap sistem</td><td>systeminfo</td><td><span class="chip chip-b">SISTEM</span></td></tr>
+          <tr><td>nslookup</td><td>Query DNS server</td><td>nslookup google.com</td><td><span class="chip chip-c">DNS</span></td></tr>
+          <tr><td>arp</td><td>Tabel Address Resolution Protocol</td><td>arp -a</td><td><span class="chip chip-a">JARINGAN</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 2: IP ADDRESS ===================== -->
+  <section class="section" id="ip">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">IP Address</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="card">
+      <h3>Apa itu IP Address?</h3>
+      <p>IP Address (Internet Protocol Address) adalah alamat numerik unik yang diberikan kepada setiap perangkat dalam jaringan komputer. IP Address berfungsi sebagai identitas perangkat untuk dapat berkomunikasi satu sama lain dalam jaringan lokal maupun internet.</p>
+    </div>
+
+    <div class="card">
+      <h3>Struktur IPv4</h3>
+      <p style="margin-bottom:16px;">IPv4 terdiri dari 32 bit yang dibagi menjadi 4 oktet (masing-masing 8 bit), ditulis dalam format desimal:</p>
+      <div class="ip-visual">
+        <div class="ip-octet">192</div>
+        <span class="ip-dot">.</span>
+        <div class="ip-octet">168</div>
+        <span class="ip-dot">.</span>
+        <div class="ip-octet">1</div>
+        <span class="ip-dot">.</span>
+        <div class="ip-octet">100</div>
+        <span style="margin-left:16px; color:var(--muted); font-size:0.85rem; font-family:'Space Mono',monospace;">/ 24</span>
+      </div>
+      <p style="font-size:0.85rem; color:var(--muted);">Rentang setiap oktet: 0 – 255 | Total alamat IPv4: ±4.3 miliar</p>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="card">
+          <h3>Kelas IP Address</h3>
+          <div class="table-wrap" style="border:none; margin-top:12px;">
+            <table>
+              <thead>
+                <tr><th>Kelas</th><th>Range</th><th>Default Mask</th><th>Penggunaan</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="chip chip-a">A</span></td><td>1.0.0.0 – 126.255.255.255</td><td>/8</td><td>WAN / ISP Besar</td></tr>
+                <tr><td><span class="chip chip-b">B</span></td><td>128.0.0.0 – 191.255.255.255</td><td>/16</td><td>Jaringan Menengah</td></tr>
+                <tr><td><span class="chip chip-c">C</span></td><td>192.0.0.0 – 223.255.255.255</td><td>/24</td><td>Jaringan Kecil</td></tr>
+                <tr><td><span class="chip chip-b">D</span></td><td>224.0.0.0 – 239.255.255.255</td><td>—</td><td>Multicast</td></tr>
+                <tr><td><span class="chip chip-a">E</span></td><td>240.0.0.0 – 255.255.255.255</td><td>—</td><td>Reserved/Eksperimen</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h3>IP Private (RFC 1918)</h3>
+          <div class="code-block">
+            <pre><span class="cmd-comment"># IP Private - tidak dapat diakses internet</span>
+
+<span class="cmd-keyword">Kelas A:</span>
+  10.0.0.0 — 10.255.255.255
+  <span class="cmd-comment">(/8 | 16.777.214 host)</span>
+
+<span class="cmd-keyword">Kelas B:</span>
+  172.16.0.0 — 172.31.255.255
+  <span class="cmd-comment">(/12 | 1.048.574 host)</span>
+
+<span class="cmd-keyword">Kelas C:</span>
+  192.168.0.0 — 192.168.255.255
+  <span class="cmd-comment">(/16 | 65.534 host)</span>
+
+<span class="cmd-keyword">Loopback:</span>
+  127.0.0.1 <span class="cmd-comment">← alamat localhost</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Subnetting — CIDR Notation</h3>
+      <div class="table-wrap" style="border:none; margin-top:12px;">
+        <table>
+          <thead>
+            <tr><th>CIDR</th><th>Subnet Mask</th><th>Jumlah Host</th><th>Jumlah Network</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>/24</td><td>255.255.255.0</td><td>254</td><td>1</td></tr>
+            <tr><td>/25</td><td>255.255.255.128</td><td>126</td><td>2</td></tr>
+            <tr><td>/26</td><td>255.255.255.192</td><td>62</td><td>4</td></tr>
+            <tr><td>/27</td><td>255.255.255.224</td><td>30</td><td>8</td></tr>
+            <tr><td>/28</td><td>255.255.255.240</td><td>14</td><td>16</td></tr>
+            <tr><td>/29</td><td>255.255.255.248</td><td>6</td><td>32</td></tr>
+            <tr><td>/30</td><td>255.255.255.252</td><td>2</td><td>64</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px; font-size:0.82rem; color:var(--muted);">💡 Rumus: Jumlah host = 2<sup>n</sup> − 2, di mana n = bit host (32 − prefix). Dikurangi 2 untuk Network Address dan Broadcast Address.</p>
+    </div>
+
+    <div class="card">
+      <h3>IPv6 — Generasi Berikutnya</h3>
+      <p>IPv6 menggunakan 128-bit address, ditulis dalam 8 grup hexadecimal 16-bit:</p>
+      <div class="code-block" style="margin-top:12px;">
+        <pre><span class="cmd-comment"># Format IPv6</span>
+<span class="cmd-keyword">2001:0db8:85a3:0000:0000:8a2e:0370:7334</span>
+
+<span class="cmd-comment"># Dapat disingkat (hapus leading zeros & "::")</span>
+<span class="cmd-output">2001:db8:85a3::8a2e:370:7334</span>
+
+<span class="cmd-comment"># Loopback IPv6</span>
+<span class="cmd-keyword">::1</span>  <span class="cmd-comment">← setara dengan 127.0.0.1</span>
+
+<span class="cmd-comment"># Total alamat IPv6</span>
+<span class="cmd-output">340 undecillion (3.4 × 10^38)</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 3: VOLTASE & WATT ===================== -->
+  <section class="section" id="volt">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Voltase & Watt Perangkat Elektronik</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Hukum Ohm & Daya Listrik</h3>
+        <div class="code-block">
+          <pre><span class="cmd-comment"># Rumus Dasar Listrik</span>
+
+<span class="cmd-keyword">V = I × R</span>       <span class="cmd-comment">// Hukum Ohm</span>
+<span class="cmd-keyword">P = V × I</span>       <span class="cmd-comment">// Daya (Watt)</span>
+<span class="cmd-keyword">P = I² × R</span>      <span class="cmd-comment">// Daya via Resistansi</span>
+<span class="cmd-keyword">P = V² / R</span>      <span class="cmd-comment">// Daya via Voltase</span>
+<span class="cmd-keyword">E = P × t</span>       <span class="cmd-comment">// Energi (kWh)</span>
+
+<span class="cmd-comment"># Keterangan Satuan</span>
+<span class="cmd-output">V = Volt (Tegangan)
+I = Ampere (Arus)
+R = Ohm (Resistansi)
+P = Watt (Daya)
+t = Jam (Waktu)</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Standar Tegangan Listrik</h3>
+        <div class="table-wrap" style="border:none;">
+          <table>
+            <thead><tr><th>Negara/Region</th><th>Tegangan</th><th>Frekuensi</th></tr></thead>
+            <tbody>
+              <tr><td>🇮🇩 Indonesia</td><td>220 V</td><td>50 Hz</td></tr>
+              <tr><td>🇺🇸 Amerika</td><td>120 V</td><td>60 Hz</td></tr>
+              <tr><td>🇬🇧 Eropa</td><td>230 V</td><td>50 Hz</td></tr>
+              <tr><td>🇯🇵 Jepang</td><td>100 V</td><td>50/60 Hz</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:14px; font-size:0.82rem; color:var(--muted);">⚠️ PLN Indonesia menggunakan 220V AC, 50Hz. Selalu periksa label rating perangkat sebelum menyambungkan ke sumber listrik.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Perangkat</th><th>Tegangan (V)</th><th>Arus (A)</th><th>Daya (W)</th><th>Kategori</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>PC Desktop (Gaming)</td><td>220 V</td><td>3–5 A</td><td>300–750 W</td><td><span class="chip chip-b">KOMPUTER</span></td></tr>
+          <tr><td>PC Desktop (Office)</td><td>220 V</td><td>1–2 A</td><td>150–250 W</td><td><span class="chip chip-b">KOMPUTER</span></td></tr>
+          <tr><td>Laptop</td><td>19–20 V DC</td><td>2–4.5 A</td><td>45–90 W</td><td><span class="chip chip-b">KOMPUTER</span></td></tr>
+          <tr><td>Monitor LED 24"</td><td>220 V</td><td>0.2 A</td><td>25–35 W</td><td><span class="chip chip-a">DISPLAY</span></td></tr>
+          <tr><td>Router WiFi</td><td>12 V DC</td><td>0.5–1 A</td><td>5–15 W</td><td><span class="chip chip-a">JARINGAN</span></td></tr>
+          <tr><td>Switch 24 Port</td><td>220 V</td><td>0.3 A</td><td>30–50 W</td><td><span class="chip chip-a">JARINGAN</span></td></tr>
+          <tr><td>Server Rack 1U</td><td>220 V</td><td>3–5 A</td><td>200–500 W</td><td><span class="chip chip-c">SERVER</span></td></tr>
+          <tr><td>UPS 1000VA</td><td>220 V</td><td>4.5 A</td><td>600 W</td><td><span class="chip chip-c">POWER</span></td></tr>
+          <tr><td>Printer Laser</td><td>220 V</td><td>4–6 A</td><td>400–900 W</td><td><span class="chip chip-b">PERIPHERAL</span></td></tr>
+          <tr><td>Smartphone Charger</td><td>5 V DC</td><td>1–4 A</td><td>5–20 W</td><td><span class="chip chip-b">MOBILE</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- KALKULATOR -->
+    <div class="calc-box">
+      <h3>// KALKULATOR DAYA LISTRIK</h3>
+      <div class="calc-row">
+        <div class="calc-input">
+          <label>Tegangan (Volt)</label>
+          <input type="number" id="volt" placeholder="contoh: 220">
+        </div>
+        <div class="calc-input">
+          <label>Arus (Ampere)</label>
+          <input type="number" id="ampere" placeholder="contoh: 2">
+        </div>
+        <div class="calc-input">
+          <label>Waktu (Jam/hari)</label>
+          <input type="number" id="waktu" placeholder="contoh: 8">
+        </div>
+        <button class="calc-btn" onclick="hitungDaya()">HITUNG</button>
+      </div>
+      <div class="calc-result" id="hasilDaya">← Masukkan nilai dan tekan HITUNG</div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 4: VIRTUAL APP ===================== -->
+  <section class="section" id="virtual">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Aplikasi Virtual</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="card">
+      <h3>Apa itu Virtualisasi?</h3>
+      <p>Virtualisasi adalah teknologi yang memungkinkan pembuatan versi virtual dari perangkat keras, sistem operasi, atau jaringan. Dengan virtualisasi, satu komputer fisik dapat menjalankan beberapa sistem operasi secara bersamaan melalui lapisan software yang disebut Hypervisor.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="app-card" style="--app-color: rgba(0,212,255,0.15)">
+        <div class="app-icon">🔵</div>
+        <h3>VirtualBox</h3>
+        <p>Hypervisor Type-2 open-source dari Oracle. Gratis dan mendukung berbagai guest OS. Ideal untuk pelajar dan lab jaringan.</p>
+        <div style="margin-top:12px;">
+          <span class="chip chip-a">GRATIS</span>
+          <span class="chip chip-a">OPEN SOURCE</span>
+          <span class="chip chip-a">WINDOWS/MAC/LINUX</span>
+        </div>
+      </div>
+
+      <div class="app-card" style="--app-color: rgba(255,107,53,0.15)">
+        <div class="app-icon">🟠</div>
+        <h3>VMware Workstation</h3>
+        <p>Hypervisor Type-2 profesional dari VMware. Performa tinggi, fitur lengkap untuk enterprise. Versi Player tersedia gratis.</p>
+        <div style="margin-top:12px;">
+          <span class="chip chip-b">BERBAYAR</span>
+          <span class="chip chip-b">ENTERPRISE</span>
+          <span class="chip chip-b">HIGH PERFORMANCE</span>
+        </div>
+      </div>
+
+      <div class="app-card" style="--app-color: rgba(124,58,237,0.15)">
+        <div class="app-icon">🟣</div>
+        <h3>Hyper-V</h3>
+        <p>Hypervisor Type-1 bawaan Windows 10/11 Pro dan Server. Digunakan untuk server production dan infrastruktur enterprise Microsoft.</p>
+        <div style="margin-top:12px;">
+          <span class="chip chip-c">TYPE-1</span>
+          <span class="chip chip-c">BUILT-IN WINDOWS</span>
+          <span class="chip chip-c">ENTERPRISE</span>
+        </div>
+      </div>
+
+      <div class="app-card" style="--app-color: rgba(0,212,255,0.15)">
+        <div class="app-icon">🟦</div>
+        <h3>Cisco Packet Tracer</h3>
+        <p>Simulator jaringan dari Cisco untuk belajar konfigurasi router, switch, dan protokol jaringan tanpa hardware fisik.</p>
+        <div style="margin-top:12px;">
+          <span class="chip chip-a">SIMULATOR</span>
+          <span class="chip chip-a">CISCO</span>
+          <span class="chip chip-a">GRATIS UNTUK PELAJAR</span>
+        </div>
+      </div>
+
+      <div class="app-card" style="--app-color: rgba(255,107,53,0.15)">
+        <div class="app-icon">🟡</div>
+        <h3>GNS3</h3>
+        <p>Graphical Network Simulator yang lebih advanced dari Packet Tracer. Mendukung image router/firewall nyata dan integrasi dengan VM.</p>
+        <div style="margin-top:12px;">
+          <span class="chip chip-b">SIMULATOR</span>
+          <span class="chip chip-b">OPEN SOURCE</span>
+          <span class="chip chip-b">ADVANCED</span>
+        </div>
+      </div>
+
+      <div class="app-card" style="--app-color: rgba(124,58,237,0.15)">
+        <div class="app-icon">🐧</div>
+        <h3>Proxmox VE</h3>
+        <p>Platform virtualisasi berbasis Linux yang menggabungkan KVM dan LXC. Digunakan untuk home lab dan production server.</p>
+        <div style="margin-top:12px;">
+          <span class="chip chip-c">TYPE-1</span>
+          <span class="chip chip-c">OPEN SOURCE</span>
+          <span class="chip chip-c">HOME LAB</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h3>Jenis Hypervisor</h3>
+      <div class="grid-2" style="margin-top:16px;">
+        <div>
+          <div class="code-block">
+            <pre><span class="cmd-comment"># Type-1 (Bare-Metal Hypervisor)</span>
+<span class="cmd-keyword">Berjalan langsung di hardware</span>
+<span class="cmd-output">Hardware → Hypervisor → VMs</span>
+
+<span class="cmd-comment"># Contoh:</span>
+<span class="cmd-output">• VMware ESXi
+• Microsoft Hyper-V
+• Proxmox VE
+• Xen Server</span>
+
+<span class="cmd-comment"># Kelebihan:</span>
+<span class="cmd-output">+ Performa tinggi
++ Efisiensi resource
++ Cocok production</span></pre>
+          </div>
+        </div>
+        <div>
+          <div class="code-block">
+            <pre><span class="cmd-comment"># Type-2 (Hosted Hypervisor)</span>
+<span class="cmd-keyword">Berjalan di atas OS host</span>
+<span class="cmd-output">Hardware → OS Host → Hypervisor → VMs</span>
+
+<span class="cmd-comment"># Contoh:</span>
+<span class="cmd-output">• VirtualBox
+• VMware Workstation
+• Parallels Desktop
+• QEMU</span>
+
+<span class="cmd-comment"># Kelebihan:</span>
+<span class="cmd-output">+ Mudah diinstall
++ Cocok untuk belajar
++ Berjalan di atas OS biasa</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-top:16px;">
+      <table>
+        <thead>
+          <tr><th>Aplikasi</th><th>Tipe</th><th>OS Host</th><th>Kegunaan di TJKT</th><th>Harga</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>VirtualBox</td><td>Type-2</td><td>Win/Mac/Linux</td><td>Lab sistem operasi, server virtual</td><td><span class="chip chip-a">GRATIS</span></td></tr>
+          <tr><td>VMware Workstation</td><td>Type-2</td><td>Win/Linux</td><td>Lab enterprise, testing</td><td><span class="chip chip-b">BERBAYAR</span></td></tr>
+          <tr><td>Cisco Packet Tracer</td><td>Simulator</td><td>Win/Mac/Linux</td><td>Simulasi jaringan Cisco</td><td><span class="chip chip-a">GRATIS SISWA</span></td></tr>
+          <tr><td>GNS3</td><td>Emulator</td><td>Win/Mac/Linux</td><td>Lab jaringan lanjutan</td><td><span class="chip chip-a">GRATIS</span></td></tr>
+          <tr><td>Proxmox VE</td><td>Type-1</td><td>Linux</td><td>Server lab, cloud lokal</td><td><span class="chip chip-a">GRATIS</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>MATERI WEB TJKT &nbsp;/&nbsp; Teknologi Jaringan Komputer & Telekomunikasi</p>
+  <p style="margin-top:8px; color:#374151;">Dibuat untuk keperluan pembelajaran SMK</p>
+</footer>
+
+<script>
+  // SCROLL ANIMATION
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+  // KALKULATOR DAYA
+  function hitungDaya() {
+    const v = parseFloat(document.getElementById('volt').value);
+    const i = parseFloat(document.getElementById('ampere').value);
+    const t = parseFloat(document.getElementById('waktu').value);
+    const el = document.getElementById('hasilDaya');
+
+    if (isNaN(v) || isNaN(i)) {
+      el.textContent = '⚠ Masukkan nilai Tegangan dan Arus terlebih dahulu!';
+      return;
+    }
+
+    const daya = v * i;
+    const result = [`[HASIL PERHITUNGAN]`, ``, `Daya (P)  = ${v} V × ${i} A = ${daya.toFixed(2)} Watt`];
+
+    if (!isNaN(t) && t > 0) {
+      const energiHarian = (daya * t) / 1000;
+      const energiBulanan = energiHarian * 30;
+      const tarifPerKwh = 1444.7; // tarif PLN R-1 2024
+      const biayaBulanan = energiBulanan * tarifPerKwh;
+      result.push(`Energi/hari  = ${energiHarian.toFixed(3)} kWh`);
+      result.push(`Energi/bulan = ${energiBulanan.toFixed(2)} kWh`);
+      result.push(`Estimasi tagihan (tarif PLN ~Rp 1.444/kWh) = Rp ${biayaBulanan.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')}/bulan`);
+    }
+
+    el.textContent = result.join('\n');
+  }
+
+  // SMOOTH SCROLL
+  document.querySelectorAll('nav a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
